@@ -7,6 +7,11 @@ package com.ouyeel.generator;
  * @create 2017-08-29 21:25
  */
 public class ColumnMetaData {
+
+    private static final String TYPE_STRING = "String";
+    private static final String TYPE_INTEGER = "Integer";
+    private static final String TYPE_DATE = "Date";
+
     /**
      * 列名
      */
@@ -24,6 +29,10 @@ public class ColumnMetaData {
      */
     private String fieldName;
     /**
+     * 列对应数据库类型
+     */
+    private String colDBType;
+    /**
      * set方法名
      */
     private String setOpeName;
@@ -35,6 +44,13 @@ public class ColumnMetaData {
      * 是否为主键
      */
     private boolean pkFlag;
+
+    public ColumnMetaData(String colName,String colDBType,String colDesc,boolean pkFlag){
+        setColName(colName);
+        setColDBType(colDBType);
+        setColDesc(colDesc);
+        setPkFlag(pkFlag);
+    }
 
     public String getColName() {
         return colName;
@@ -93,6 +109,23 @@ public class ColumnMetaData {
 
     public void setPkFlag(boolean pkFlag) {
         this.pkFlag = pkFlag;
+    }
+
+    public String getColDBType() {
+        return colDBType;
+    }
+
+    public void setColDBType(String colDBType) {
+        this.colDBType = colDBType;
+        String colType = null;
+        switch (colDBType){
+            case "INT": colType = TYPE_INTEGER;break;
+            case "CHAR":
+            case "VARCHAR":colDBType = TYPE_STRING;break;
+            case "TIMESTAMP":colDBType = TYPE_DATE;break;
+            default:colDBType = TYPE_STRING;
+        }
+        setColType(colType);
     }
 
     /**

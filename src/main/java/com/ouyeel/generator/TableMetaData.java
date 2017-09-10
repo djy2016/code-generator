@@ -84,6 +84,14 @@ public class TableMetaData {
         this.mapperXmlName = mapperXmlName;
     }
 
+    public List<ColumnMetaData> getCols() {
+        return cols;
+    }
+
+    public void setCols(List<ColumnMetaData> cols) {
+        this.cols = cols;
+    }
+
     /**
      * 格式化数据库表名，规则：
      * 单个名词：首字母大写

@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -32,16 +34,39 @@ public class Main {
         Connection connection = DriverManager.getConnection(config.getDatabaseUrl(),p);
         DatabaseMetaData metaData = connection.getMetaData();
         if (StringUtils.isNotEmpty(tables)) {
+            //目前先测试：单个表代码生成
             ResultSet resultSet = metaData.getTables(null, config.getDatabaseSchema(), tables, new String[]{"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
+                TableMetaData tableMetaData = new TableMetaData(tableName);
+                ResultSet primaryKeyRs = metaData.getPrimaryKeys(null,config.getDatabaseSchema(),tableName);
+                //主键列表
+                List<String> primaryKeyCols = new ArrayList<String>();
+                while (primaryKeyRs.next()){
+                    String primaryKeyCol = primaryKeyRs.getString("COLUMN_NAME");
+                    primaryKeyCols.add(primaryKeyCol);
+                }
                 logger.info("表名称为:{}", tableName);
                 ResultSet rs = metaData.getColumns(null, config.getDatabaseSchema(), tableName.toUpperCase(), "%");
+                List<ColumnMetaData> columnMetaDatas = new ArrayList<ColumnMetaData>();
                 while (rs.next()){
                     String colName = rs.getString("COLUMN_NAME");
                     String remarks = rs.getString("REMARKS");
                     String colType = rs.getString("TYPE_NAME");
+                    boolean pkFlag = false;
+                    //判断列是否在主键列表中
+                    for(String primaryKey:primaryKeyCols){
+                        if(primaryKey.equals(colName)){
+                            pkFlag = true;
+                            break;
+                        }
+                    }
+                    ColumnMetaData columnMetaData = new ColumnMetaData(colName,colType,remarks,pkFlag);
+                    columnMetaDatas.add(columnMetaData);
                 }
+                tableMetaData.setCols(columnMetaDatas);
+                Properties properties = new Properties();
+
             }
             resultSet.close();
         }
