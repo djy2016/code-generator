@@ -58,9 +58,9 @@ public class ColumnMetaData {
 
     public void setColName(String colName) {
         this.colName = colName;
-        this.fieldName = format(colName,false);
-        this.setOpeName = "set" + format(colName,true);
-        this.getOpeName = "get" + format(colName,true);
+        this.fieldName = format(colName,true);
+        this.setOpeName = "set" + format(colName,false);
+        this.getOpeName = "get" + format(colName,false);
     }
 
     public String getColType() {
@@ -121,9 +121,9 @@ public class ColumnMetaData {
         switch (colDBType){
             case "INT": colType = TYPE_INTEGER;break;
             case "CHAR":
-            case "VARCHAR":colDBType = TYPE_STRING;break;
-            case "TIMESTAMP":colDBType = TYPE_DATE;break;
-            default:colDBType = TYPE_STRING;
+            case "VARCHAR":colType = TYPE_STRING;break;
+            case "TIMESTAMP":colType = TYPE_DATE;break;
+            default:colType = TYPE_STRING;
         }
         setColType(colType);
     }
@@ -131,14 +131,14 @@ public class ColumnMetaData {
     /**
      * 将列名格式化为属性名
      * @param colName 需要格式化的列名
-     * @param firstUpper 格式化后字符串首字符是否大写
+     * @param firstLower 格式化后字符串首字符是否大写
      * @return 格式化的属性名
      */
-    private String format(String colName,boolean firstUpper){
+    private String format(String colName,boolean firstLower){
         StringBuffer buffer = new StringBuffer();
         String[] splitColNames = colName.split("_");
         for(int i=0;i<splitColNames.length;i++){
-            if(i==0&&firstUpper){
+            if(i==0&&firstLower){
                 String name = splitColNames[i].toLowerCase();
                 buffer.append(name);
             }else{

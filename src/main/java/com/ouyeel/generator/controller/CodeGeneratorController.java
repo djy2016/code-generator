@@ -2,6 +2,7 @@ package com.ouyeel.generator.controller;
 
 import com.ouyeel.generator.GeneratorProperties;
 import com.ouyeel.generator.Main;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,7 +36,12 @@ public class CodeGeneratorController {
         //更新generator.properties属性文件设置
         GeneratorProperties.update(url,user,pwd,schema);
         try {
-            Main.run(projectPackage,tables);
+            Main.run(projectPackage,tables,outputPath);
+            if(StringUtils.isEmpty(outputPath)){
+                outputPath = "D:/temp";
+            }
+            String command = "cmd /c start " + outputPath;
+            Runtime.getRuntime().exec(command);
         } catch (Exception e) {
             e.printStackTrace();
         }

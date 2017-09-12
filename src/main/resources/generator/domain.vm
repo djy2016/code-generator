@@ -1,0 +1,33 @@
+package ${meta.domainPackageName};
+
+import java.io.Serializable;
+import java.lang.*;
+import java.util.*;
+
+public class ${meta.domainClassName} implements Serializable {
+
+private static final long serialVersionUID = 1L;
+
+#foreach(${col} in ${meta.cols})
+    private ${col.colType} ${col.fieldName};
+
+#end
+
+#foreach(${col} in ${meta.cols})
+    public void ${col.setOpeName}(${col.colType} ${col.colName}){
+        this.${col.fieldName}=${col.fieldName};
+    }
+    public ${col.colType} ${col.getOpeName}(){
+        return ${col.fieldName};
+    }
+#end
+
+    @Override
+    public String toString() {
+        return "${meta.domainClassName}{" +
+            #foreach(${col} in ${meta.cols})
+                "${col.fieldName}=" + ${col.fieldName} + "," +
+            #end
+        '}';
+    }
+}

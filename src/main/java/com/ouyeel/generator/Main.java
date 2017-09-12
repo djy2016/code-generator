@@ -1,9 +1,18 @@
 package com.ouyeel.generator;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -22,8 +31,9 @@ public class Main {
 
     private static Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static void run(String projectPackage, String tables) throws Exception {
+    public static void run(String projectPackage, String tables,String outPath) throws Exception {
         Config config = new Config();
+        String filePath = Main.class.getClassLoader().getResource("generator").getPath();
         //1.加载数据库驱动
         Class.forName(config.getDatabaseDriver()).newInstance();
         Properties p = new Properties();
@@ -38,7 +48,7 @@ public class Main {
             ResultSet resultSet = metaData.getTables(null, config.getDatabaseSchema(), tables, new String[]{"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
-                TableMetaData tableMetaData = new TableMetaData(tableName);
+                TableMetaData tableMetaData = new TableMetaData(tableName,projectPackage);
                 ResultSet primaryKeyRs = metaData.getPrimaryKeys(null,config.getDatabaseSchema(),tableName);
                 //主键列表
                 List<String> primaryKeyCols = new ArrayList<String>();
@@ -65,11 +75,54 @@ public class Main {
                     columnMetaDatas.add(columnMetaData);
                 }
                 tableMetaData.setCols(columnMetaDatas);
-                Properties properties = new Properties();
-
+//                String[] templates = new String[]{"domain.vm","service.vm","serviceImpl.vm","mapper.vm","mapperXml.vm"};
+                String[] templates = new String[]{"domain.vm"};
+//                String[] files = new String[]{
+//                        getFilePath(tableMetaData.getDomainPackageName()) + tableMetaData.getDomainClassName() + ".java",
+//                        getFilePath(tableMetaData.getServicePackageName()) + tableMetaData.getServiceInterfaceName() + ".java",
+//                        getFilePath(tableMetaData.getServicePackageName()) + tableMetaData.getServiceImplName() + ".java",
+//                        getFilePath(tableMetaData.getMapperPackageName()) + tableMetaData.getMapperInterfaceName() + ".java",
+//                        getFilePath(tableMetaData.getMapperPackageName()) + tableMetaData.getMapperXmlName() + ".xml"
+//                };
+                if(StringUtils.isEmpty(outPath)){
+                    outPath = "D:\\temp\\" + getFilePath(projectPackage);
+                }else{
+                    outPath = outPath.replace("/","\\") + "\\" + getFilePath(projectPackage);
+                }
+                File file = new File(outPath);
+                if(!file.exists()){
+                    file.mkdirs();
+                }
+                String[] files = new String[]{
+                        outPath + tableMetaData.getDomainClassName() + ".java"
+                };
+//                String[] templates = new String[]{"domain.vm"};
+                for (int i = 0; i < templates.length; i++) {
+                    //初始化模板引擎
+                    VelocityEngine engine = new VelocityEngine();
+//                    engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+                    engine.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH,filePath + "\\");
+//                    engine.setProperty("file.resource.loader.class", ClasspathResourceLoader.class.getName());
+                    engine.init();
+                    //获取模板文件
+                    Template template = engine.getTemplate(templates[i]);
+                    template.setEncoding("UTF-8");
+                    //设置变量，将表和列信息封装到map中
+                    VelocityContext context = new VelocityContext();
+                    context.put("meta",tableMetaData);
+                    //输出
+                    FileWriter fileWriter = new FileWriter(files[i],false);
+                    template.merge(context,fileWriter);
+                    fileWriter.flush();
+                    fileWriter.close();
+                }
             }
             resultSet.close();
         }
         connection.close();
+    }
+
+    private static String getFilePath(String packageName){
+        return packageName.replace(".","\\") + "\\";
     }
 }

@@ -15,9 +15,17 @@ public class TableMetaData {
      */
     private String domainClassName;
     /**
+     * domain所在包全路径
+     */
+    private String domainPackageName;
+    /**
      * service接口名
      */
     private String serviceInterfaceName;
+    /**
+     * service接口和实现类全路径
+     */
+    private String servicePackageName;
     /**
      * service接口实现类名
      */
@@ -27,6 +35,10 @@ public class TableMetaData {
      */
     private String mapperInterfaceName;
     /**
+     * mapper接口所在包名
+     */
+    private String mapperPackageName;
+    /**
      * mapper接口对应xml文件名
      */
     private String mapperXmlName;
@@ -35,13 +47,20 @@ public class TableMetaData {
      */
     private List<ColumnMetaData> cols;
 
-    public TableMetaData(String tableName){
+    public TableMetaData(String tableName,String projectPackage){
         tableName = format(tableName);
-        domainClassName = tableName + ".java";
-        serviceInterfaceName = tableName + "Interface.java";
-        serviceImplName = tableName + "InterfaceImpl.java";
-        mapperInterfaceName = tableName + "Mapper.java";
-        mapperXmlName = tableName + "Mapper.xml";
+
+        domainClassName = tableName;
+        domainPackageName = projectPackage + ".common.domain";
+
+        serviceInterfaceName = tableName + "Service";
+        serviceImplName = tableName + "ServiceImpl";
+        servicePackageName = projectPackage + ".service";
+
+        mapperInterfaceName = tableName + "Mapper";
+        mapperXmlName = tableName + "Mapper";
+        mapperPackageName = projectPackage + ".common.mapper";
+
     }
 
     public String getDomainClassName() {
@@ -82,6 +101,30 @@ public class TableMetaData {
 
     public void setMapperXmlName(String mapperXmlName) {
         this.mapperXmlName = mapperXmlName;
+    }
+
+    public String getDomainPackageName() {
+        return domainPackageName;
+    }
+
+    public void setDomainPackageName(String domainPackageName) {
+        this.domainPackageName = domainPackageName;
+    }
+
+    public String getServicePackageName() {
+        return servicePackageName;
+    }
+
+    public void setServicePackageName(String servicePackageName) {
+        this.servicePackageName = servicePackageName;
+    }
+
+    public String getMapperPackageName() {
+        return mapperPackageName;
+    }
+
+    public void setMapperPackageName(String mapperPackageName) {
+        this.mapperPackageName = mapperPackageName;
     }
 
     public List<ColumnMetaData> getCols() {
