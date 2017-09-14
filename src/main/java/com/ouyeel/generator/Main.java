@@ -75,29 +75,27 @@ public class Main {
                     columnMetaDatas.add(columnMetaData);
                 }
                 tableMetaData.setCols(columnMetaDatas);
-//                String[] templates = new String[]{"domain.vm","service.vm","serviceImpl.vm","mapper.vm","mapperXml.vm"};
-                String[] templates = new String[]{"domain.vm"};
-//                String[] files = new String[]{
-//                        getFilePath(tableMetaData.getDomainPackageName()) + tableMetaData.getDomainClassName() + ".java",
-//                        getFilePath(tableMetaData.getServicePackageName()) + tableMetaData.getServiceInterfaceName() + ".java",
-//                        getFilePath(tableMetaData.getServicePackageName()) + tableMetaData.getServiceImplName() + ".java",
-//                        getFilePath(tableMetaData.getMapperPackageName()) + tableMetaData.getMapperInterfaceName() + ".java",
-//                        getFilePath(tableMetaData.getMapperPackageName()) + tableMetaData.getMapperXmlName() + ".xml"
-//                };
+                String[] templates = new String[]{"domain.vm","service.vm","serviceImpl.vm","mapper.vm"};
+                String[] packages = new String[]{"common/domain/","service/","service/","common/mapper/"};
                 if(StringUtils.isEmpty(outPath)){
-                    outPath = "D:\\temp\\" + getFilePath(projectPackage);
+                    outPath = "D:/temp/";
                 }else{
-                    outPath = outPath.replace("/","\\") + "\\" + getFilePath(projectPackage);
-                }
-                File file = new File(outPath);
-                if(!file.exists()){
-                    file.mkdirs();
+                    if(!outPath.endsWith("/")){
+                        outPath = outPath + "/";
+                    }
                 }
                 String[] files = new String[]{
-                        outPath + tableMetaData.getDomainClassName() + ".java"
+                        tableMetaData.getDomainClassName() + ".java",
+                        tableMetaData.getServiceInterfaceName() + ".java",
+                        tableMetaData.getServiceImplName() + ".java",
+                        tableMetaData.getMapperInterfaceName() + ".java"
                 };
-//                String[] templates = new String[]{"domain.vm"};
                 for (int i = 0; i < templates.length; i++) {
+                    String packagePath = (outPath + getFilePath(projectPackage) + packages[i]).replace("/","\\");
+                    File file = new File(packagePath);
+                    if(!file.exists()){
+                        file.mkdirs();
+                    }
                     //初始化模板引擎
                     VelocityEngine engine = new VelocityEngine();
 //                    engine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
@@ -111,7 +109,7 @@ public class Main {
                     VelocityContext context = new VelocityContext();
                     context.put("meta",tableMetaData);
                     //输出
-                    FileWriter fileWriter = new FileWriter(files[i],false);
+                    FileWriter fileWriter = new FileWriter(packagePath + files[i],false);
                     template.merge(context,fileWriter);
                     fileWriter.flush();
                     fileWriter.close();
@@ -123,6 +121,6 @@ public class Main {
     }
 
     private static String getFilePath(String packageName){
-        return packageName.replace(".","\\") + "\\";
+        return packageName.replace(".","/") + "/";
     }
 }

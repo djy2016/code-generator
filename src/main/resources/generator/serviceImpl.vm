@@ -1,0 +1,53 @@
+package ${meta.servicePackageName};
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.PageHelper;
+import ${meta.domainPackageName}.${meta.domainClassName};
+import ${meta.mapperPackageName}.${meta.mapperInterfaceName};
+import ${meta.servicePackageName}.${meta.serviceInterfaceName};
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+@Service(protocol = {"dubbo"})
+public class ${meta.serviceImplName} implements ${meta.serviceInterfaceName} {
+
+    @Autowired
+    private ${meta.mapperInterfaceName} _${meta.mapperInterfaceName};
+
+    @Override
+    public List<${meta.domainClassName}> load${meta.domainClassName}s(${meta.domainClassName} entity){
+        return _${meta.mapperInterfaceName}.find${meta.domainClassName}s(entity);
+    }
+
+    public List<${meta.domainClassName}> query${meta.domainClassName}s(${meta.domainClassName} entity,int page,int pageSize){
+        PageHelper.startPage(page,pageSize);
+        return _${meta.mapperInterfaceName}.find${meta.domainClassName}s(entity);
+    }
+
+    @Override
+    public int count${meta.domainClassName}s(${meta.domainClassName} entity){
+    return _${meta.mapperInterfaceName}.count${meta.domainClassName}s(entity);
+    }
+
+    @Override
+    public int modify${meta.domainClassName}(${meta.domainClassName} entity){
+    return _${meta.mapperInterfaceName}.modify${meta.domainClassName}(entity);
+    }
+
+    @Override
+    public int add${meta.domainClassName}(${meta.domainClassName} entity){
+        return _${meta.mapperInterfaceName}.add${meta.domainClassName}(entity);
+    }
+
+    @Override
+    public int delete${meta.domainClassName}(${meta.domainClassName} entity){
+        return _${meta.mapperInterfaceName}.remove${meta.domainClassName}(entity);
+    }
+
+    @Override
+    public int delete${meta.domainClassName}ByKey(#set($temp=0)#foreach(${col} in ${meta.cols})#if(${col.pkFlag})#if($temp > 0),#end${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end){
+        return _${meta.mapperInterfaceName}.remove${meta.domainClassName}ByKey(#set($temp=0)#foreach(${col} in ${meta.cols})#if(${col.pkFlag})#if($temp > 0),#end${col.fieldName}#set($temp=$temp+1)#end#end);
+    }
+
+}

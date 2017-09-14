@@ -1,0 +1,22 @@
+package ${meta.servicePackageName};
+
+import ${meta.domainPackageName}.${meta.domainClassName};
+
+import java.util.List;
+
+public interface ${meta.serviceInterfaceName} {
+
+    List<${meta.domainClassName}> load${meta.domainClassName}s(${meta.domainClassName} entity);
+
+    List<${meta.domainClassName}> query${meta.domainClassName}s(${meta.domainClassName} entity,int page,int pageSize);
+
+    int count${meta.domainClassName}s(${meta.domainClassName} entity);
+
+    int modify${meta.domainClassName}(${meta.domainClassName} entity);
+
+    int add${meta.domainClassName}(${meta.domainClassName} entity);
+
+    int delete${meta.domainClassName}(${meta.domainClassName} entity);
+
+    int delete${meta.domainClassName}ByKey(#set($temp=0)#foreach(${col} in ${meta.cols})#if(${col.pkFlag})#if($temp > 0),#end${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end);
+}

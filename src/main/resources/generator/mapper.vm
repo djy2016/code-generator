@@ -1,0 +1,23 @@
+package ${meta.mapperPackageName};
+
+import com.ouyeel.xplat.data.mapper.XMapper;
+import ${meta.domainPackageName}.${meta.domainClassName};
+import org.apache.ibatis.annotations.Param;
+import java.util.List;
+
+public interface ${meta.mapperInterfaceName} extends XMapper{
+
+    List<${meta.domainClassName}> find${meta.domainClassName}s(${meta.domainClassName} entity);
+
+    List<${meta.domainClassName}> load${meta.domainClassName}(${meta.domainClassName} entity);
+
+    int count${meta.domainClassName}s(${meta.domainClassName} entity);
+
+    int modify${meta.domainClassName}(${meta.domainClassName} entity);
+
+    int add${meta.domainClassName}(${meta.domainClassName} entity);
+
+    int remove${meta.domainClassName}(${meta.domainClassName} entity);
+
+    int remove${meta.domainClassName}ByKey(#set($temp=0)#foreach(${col} in ${meta.cols})#if(${col.pkFlag})#if($temp > 0),#end @Param ("${colo.fieldName}") ${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end);
+}

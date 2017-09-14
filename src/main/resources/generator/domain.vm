@@ -25,8 +25,14 @@ private static final long serialVersionUID = 1L;
     @Override
     public String toString() {
         return "${meta.domainClassName}{" +
+            #set($temp=0)
             #foreach(${col} in ${meta.cols})
-                "${col.fieldName}=" + ${col.fieldName} + "," +
+                #if($temp > 0)
+                    ",${col.fieldName}=" + ${col.fieldName} +
+                    #else
+                    "${col.fieldName}=" + ${col.fieldName} +
+                #end
+                #set($temp=$temp+1)
             #end
         '}';
     }
