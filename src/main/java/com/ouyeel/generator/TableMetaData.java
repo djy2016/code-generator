@@ -11,6 +11,10 @@ import java.util.List;
 public class TableMetaData {
 
     /**
+     * 表名称
+     */
+    private String dbTableName;
+    /**
      * domain类名
      */
     private String domainClassName;
@@ -48,6 +52,7 @@ public class TableMetaData {
     private List<ColumnMetaData> cols;
 
     public TableMetaData(String tableName,String projectPackage){
+        dbTableName = tableName;
         tableName = format(tableName);
 
         domainClassName = tableName;
@@ -61,6 +66,14 @@ public class TableMetaData {
         mapperXmlName = tableName + "Mapper";
         mapperPackageName = projectPackage + ".common.mapper";
 
+    }
+
+    public String getDbTableName() {
+        return dbTableName;
+    }
+
+    public void setDbTableName(String dbTableName) {
+        this.dbTableName = dbTableName;
     }
 
     public String getDomainClassName() {

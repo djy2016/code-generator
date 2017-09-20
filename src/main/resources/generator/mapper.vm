@@ -9,8 +9,6 @@ public interface ${meta.mapperInterfaceName} extends XMapper{
 
     List<${meta.domainClassName}> find${meta.domainClassName}s(${meta.domainClassName} entity);
 
-    List<${meta.domainClassName}> load${meta.domainClassName}(${meta.domainClassName} entity);
-
     int count${meta.domainClassName}s(${meta.domainClassName} entity);
 
     int modify${meta.domainClassName}(${meta.domainClassName} entity);

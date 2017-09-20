@@ -36,10 +36,14 @@ public class CodeGeneratorController {
         //更新generator.properties属性文件设置
         GeneratorProperties.update(url,user,pwd,schema);
         try {
-            Main.run(projectPackage,tables,outputPath);
             if(StringUtils.isEmpty(outputPath)){
-                outputPath = "D:/temp";
+                outputPath = "D:/temp/";
+            }else{
+                if(!outputPath.endsWith("/")){
+                    outputPath = outputPath + "/";
+                }
             }
+            Main.run(projectPackage,tables,outputPath);
             String command = "cmd /c start " + outputPath;
             Runtime.getRuntime().exec(command);
         } catch (Exception e) {

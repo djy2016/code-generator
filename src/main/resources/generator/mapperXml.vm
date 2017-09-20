@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN""http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="${meta.mapperPackageName}.${meta.mapperInterfaceName}">
+    <resultMap type="${meta.domainPackageName}.${meta.domainClassName}" id="${meta.domainClassName}">
+        #foreach(${col} in ${meta.cols})
+            <result property="${col.fieldName}" column="${col.colName}" />
+        #end
+    </resultMap>
+
+    <select id="find${meta.domainClassName}s" resultMap="${meta.domainClassName}" parameterType="${meta.domainPackageName}.${meta.domainClassName}">
+        select
+        #set($temp=0)
+        #foreach(${col} in ${meta.cols})
+            #if($temp>0)
+                , ${col.colName} as "${col.fieldName}"
+                #else
+                ${col.colName} as "${col.fieldName}"
+            #end
+            #set($temp=$temp+1)
+        #end
+        from ${meta.dbTableName}
+        <where>
+            #foreach(${col} in ${meta.cols})
+                <if test="${col.fieldName}!=null">and ${col.colName}=#{${col.fieldName}}</if>
+            #end
+        </where>
+    </select>
+
+    <select id="get${meta.domainClassName}" resultMap="${meta.domainClassName}">
+        select
+        #set($temp=0)
+        #foreach(${col} in ${meta.cols})
+            #if($temp>0)
+                , ${col.colName} as "${col.fieldName}"
+            #else
+                ${col.colName} as "${col.fieldName}"
+            #end
+            #set($temp=$temp+1)
+        #end
+        from ${meta.dbTableName}
+        <where>
+            #foreach(${col} in ${meta.cols})
+                #if(${col.pkFlag})
+                    <if test="${col.fieldName}!=null">and ${col.colName}=#{${col.fieldName}}</if>
+                #end
+            #end
+        </where>
+    </select>
+
+    <select id="count${meta.domainClassName}s" resultType="int" parameterType="hashmap">
+        select
+        count(*) from ${meta.dbTableName}
+        <where>
+            #foreach(${col} in ${meta.cols})
+                <if test="${col.fieldName}!=null">and ${col.colName}=#{${col.fieldName}}</if>
+            #end
+        </where>
+    </select>
+
+    <update id="modify${meta.domainClassName}" parameterType="${meta.domainPackageName}.${meta.domainClassName}">
+        update ${meta.dbTableName}
+        set
+        #set($temp=0)
+        #foreach(${col} in ${meta.cols})
+            #if(!${col.pkFlag})
+                #if($temp>0)
+                    , ${col.colName} = #{${col.fieldName}}
+                #else
+                    ${col.colName} = #{${col.fieldName}}
+                #end
+                #set($temp=$temp+1)
+            #end
+        #end
+        where
+        #set($temp=0)
+        #foreach(${col} in ${meta.cols})
+            #if(${col.pkFlag})
+                #if($temp>0)
+                    and ${col.colName}=#{${col.fieldName}}
+                #else
+                    ${col.colName}=#{${col.fieldName}}
+                #end
+                #set($temp=$temp+1)
+            #end
+        #end
+    </update>
+
+    <insert id="add${meta.domainClassName}" parameterType="${meta.domainPackageName}.${meta.domainClassName}">
+        insert into ${meta.dbTableName} (
+            #set($temp=0)
+            #foreach(${col} in ${meta.cols})
+                #if($temp>0)
+                    , ${col.colName}
+                    #else
+                    ${col.colName}
+                #end
+                #set($temp=$temp+1)
+            #end
+        )
+        values(
+            #set($temp=0)
+            #foreach(${col} in ${meta.cols})
+                #if($temp>0)
+                    , #{${col.fieldName}}
+                #else
+                    #{${col.fieldName}}
+                #end
+                #set($temp=$temp+1)
+            #end
+        )
+    </insert>
+
+    <delete id="remove${meta.domainClassName}" parameterType="${meta.domainPackageName}.${meta.domainClassName}">
+        delete from ${meta.dbTableName}
+        <where>
+            #foreach(${col} in ${meta.cols})
+                <if test="${col.fieldName}!=null">and ${col.colName}=#{${col.fieldName}}</if>
+            #end
+        </where>
+    </delete>
+
+    <delete id="remove${meta.domainClassName}ByKey">
+        delete from ${meta.dbTableName}
+        where
+        #set($temp=0)
+        #foreach(${col} in ${meta.cols})
+            #if(${col.pkFlag})
+                #if($temp>0)
+                    and ${col.colName}=#{${col.fieldName}}
+                #else
+                    ${col.colName}=#{${col.fieldName}}
+                #end
+                #set($temp=$temp+1)
+            #end
+        #end
+    </delete>
+
+</mapper>
