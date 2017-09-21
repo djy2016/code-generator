@@ -44,7 +44,9 @@ public class CodeGeneratorController {
                 }
             }
             Main.run(projectPackage,tables,outputPath);
+            //windows的dos模式执行的命令
             String command = "cmd /c start " + outputPath;
+            //调用执行cmd指令
             Runtime.getRuntime().exec(command);
         } catch (Exception e) {
             e.printStackTrace();

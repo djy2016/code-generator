@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -50,14 +49,14 @@ public class Main {
                 TableMetaData tableMetaData = new TableMetaData(tableName, projectPackage);
                 ResultSet primaryKeyRs = metaData.getPrimaryKeys(null, config.getDatabaseSchema(), tableName);
                 //主键列表
-                List<String> primaryKeyCols = new ArrayList<String>();
+                List<String> primaryKeyCols = new ArrayList<>();
                 while (primaryKeyRs.next()) {
                     String primaryKeyCol = primaryKeyRs.getString("COLUMN_NAME");
                     primaryKeyCols.add(primaryKeyCol);
                 }
                 logger.info("表名称为:{}", tableName);
                 ResultSet rs = metaData.getColumns(null, config.getDatabaseSchema(), tableName.toUpperCase(), "%");
-                List<ColumnMetaData> columnMetaDatas = new ArrayList<ColumnMetaData>();
+                List<ColumnMetaData> columnMetaDatas = new ArrayList<>();
                 while (rs.next()) {
                     String colName = rs.getString("COLUMN_NAME");
                     String remarks = rs.getString("REMARKS");
@@ -104,8 +103,13 @@ public class Main {
                     //输出
                     FileWriter fileWriter = new FileWriter(packagePath + files[i], false);
                     template.merge(context, fileWriter);
+                    //刷新流
                     fileWriter.flush();
+                    //关闭流
                     fileWriter.close();
+                    //关闭ResultSet
+                    rs.close();
+                    primaryKeyRs.close();
                 }
             }
             resultSet.close();

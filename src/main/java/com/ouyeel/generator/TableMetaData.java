@@ -1,5 +1,6 @@
 package com.ouyeel.generator;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -158,11 +159,15 @@ public class TableMetaData {
     private String format(String tableName){
         StringBuffer buffer = new StringBuffer();
         String[] names = tableName.split("_");
-        for(int i=0;i<names.length;i++){
-            String name = names[i];
+        Arrays.stream(names).forEach(name -> {
             name = name.replace(name.substring(0,1),name.substring(0,1).toUpperCase());
             buffer.append(name);
-        }
+        });
+//        for(int i=0;i<names.length;i++){
+//            String name = names[i];
+//            name = name.replace(name.substring(0,1),name.substring(0,1).toUpperCase());
+//            buffer.append(name);
+//        }
         return buffer.toString();
     }
 }
