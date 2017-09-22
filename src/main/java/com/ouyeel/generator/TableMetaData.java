@@ -1,5 +1,7 @@
 package com.ouyeel.generator;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -154,20 +156,16 @@ public class TableMetaData {
      * 单个名词：首字母大写
      * 多个单词组成，每个单词首字母大写
      * @param tableName 需格式化的表名
+     * @see StringUtils#capitalize(String) 字符串首字母大写
      * @return 格式化的表名
      */
     private String format(String tableName){
         StringBuffer buffer = new StringBuffer();
         String[] names = tableName.split("_");
         Arrays.stream(names).forEach(name -> {
-            name = name.replace(name.substring(0,1),name.substring(0,1).toUpperCase());
-            buffer.append(name);
+            //name首字母大写
+            buffer.append(StringUtils.capitalize(name));
         });
-//        for(int i=0;i<names.length;i++){
-//            String name = names[i];
-//            name = name.replace(name.substring(0,1),name.substring(0,1).toUpperCase());
-//            buffer.append(name);
-//        }
         return buffer.toString();
     }
 }

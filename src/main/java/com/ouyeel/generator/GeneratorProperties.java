@@ -22,7 +22,7 @@ public class GeneratorProperties {
     public static void update(String url,String user,String pwd,String schema){
         String filePath = GeneratorProperties.class.getClassLoader().getResource("generator").getPath() + "/generator.properties";
         Properties p = new Properties();
-        Map<String,String> map = new HashMap<String, String>();
+        Map<String,String> map = new HashMap<>();
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {

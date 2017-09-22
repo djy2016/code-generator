@@ -17,5 +17,5 @@ public interface ${meta.mapperInterfaceName} extends XMapper{
 
     int remove${meta.domainClassName}(${meta.domainClassName} entity);
 
-    int remove${meta.domainClassName}ByKey(#set($temp=0)#foreach(${col} in ${meta.cols})#if(${col.pkFlag})#if($temp > 0),#end @Param ("${colo.fieldName}") ${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end);
+    int remove${meta.domainClassName}ByKey(#set($temp=0)#foreach(${col} in ${meta.cols})#if(${col.pkFlag})#if($temp > 0),#end @Param ("${col.fieldName}") ${col.colType} ${col.fieldName}#set($temp=$temp+1)#end#end);
 }

@@ -14,7 +14,7 @@ private static final long serialVersionUID = 1L;
 #end
 
 #foreach(${col} in ${meta.cols})
-    public void ${col.setOpeName}(${col.colType} ${col.colName}){
+    public void ${col.setOpeName}(${col.colType} ${col.fieldName}){
         this.${col.fieldName}=${col.fieldName};
     }
     public ${col.colType} ${col.getOpeName}(){
