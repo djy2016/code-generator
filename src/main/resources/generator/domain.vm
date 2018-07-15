@@ -6,34 +6,64 @@ import java.util.*;
 
 public class ${meta.domainClassName} implements Serializable {
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-#foreach(${col} in ${meta.cols})
+    #foreach(${col} in ${meta.cols})
     private ${col.colType} ${col.fieldName};
 
-#end
+    #end
 
-#foreach(${col} in ${meta.cols})
+    #foreach(${col} in ${meta.cols})
     public void ${col.setOpeName}(${col.colType} ${col.fieldName}){
         this.${col.fieldName}=${col.fieldName};
     }
+
     public ${col.colType} ${col.getOpeName}(){
         return ${col.fieldName};
     }
-#end
+
+    #end
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) {
+            return true;
+        }
+        if (that == null) {
+            return false;
+        }
+        if (getClass() != that.getClass()) {
+            return false;
+        }
+        ${meta.domainClassName} other = (${meta.domainClassName}) that;
+        return  #set($temp=1)
+                #foreach( ${col} in ${meta.cols} )
+                    #if($temp!=1)&&#end
+                    (this.${col.getOpeName}() == null ? other.${col.getOpeName}() == null : this.${col.getOpeName}().equals(other.${col.getOpeName}()))
+                    #set($temp=$temp+1)
+                #end;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        #foreach( ${col} in ${meta.cols} )
+        result = prime * result + ((${col.getOpeName}() == null) ? 0 : ${col.getOpeName}().hashCode());
+        #end
+        return result;
+    }
 
     @Override
     public String toString() {
-        return "${meta.domainClassName}{" +
-            #set($temp=0)
-            #foreach(${col} in ${meta.cols})
-                #if($temp > 0)
-                    ",${col.fieldName}=" + ${col.fieldName} +
-                    #else
-                    "${col.fieldName}=" + ${col.fieldName} +
-                #end
-                #set($temp=$temp+1)
-            #end
-        '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        #foreach( ${col} in ${meta.cols} )
+        sb.append(", ${col.fieldName}=").append(${col.fieldName});
+        #end
+        sb.append("]");
+        return sb.toString();
     }
 }
